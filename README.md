@@ -48,14 +48,14 @@ cd reactjs-tiptap-editor
 Install dependencies
 
 ```bash
-pnpm install
+bun install
 ```
 
 Start the Demo server
 
 ```bash
-npm run build:lib:dev
-npm run playground
+bun run build:lib:dev
+bun run playground
 ```
 
 ## All Contributors

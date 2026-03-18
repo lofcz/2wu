@@ -5,7 +5,22 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
-const TooltipProvider = TooltipPrimitive.Provider;
+const DEFAULT_TOOLTIP_DELAY_DURATION = 350;
+const DEFAULT_TOOLTIP_SKIP_DELAY_DURATION = 0;
+
+function TooltipProvider({
+  delayDuration = DEFAULT_TOOLTIP_DELAY_DURATION,
+  skipDelayDuration = DEFAULT_TOOLTIP_SKIP_DELAY_DURATION,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider>) {
+  return (
+    <TooltipPrimitive.Provider
+      delayDuration={delayDuration}
+      skipDelayDuration={skipDelayDuration}
+      {...props}
+    />
+  );
+}
 
 const Tooltip = TooltipPrimitive.Root;
 

@@ -6,19 +6,17 @@ Thanks for lending a hand 👋
 
 ### Setup
 
-- We use [pnpm](https://pnpm.js.org/) to manage dependencies. Install it with `npm i -g pnpm`.
-
 Install dependencies
 
 ```bash
-pnpm install
+bun install
 ```
 
 Start the Demo server
 
 ```bash
-npm run build:lib:dev
-npm run playground
+bun run build:lib:dev
+bun run playground
 ```
 
 ### Packages Structure

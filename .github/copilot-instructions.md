@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-This is a modular rich-text editor library built on **Tiptap 3.x** with **Shadcn UI** patterns. It ships as a pnpm monorepo:
+This is a modular rich-text editor library built on **Tiptap 3.x** with **Shadcn UI** patterns. It ships as a Bun workspace monorepo:
 
 - `src/` - Main library source (published to npm)
 - `playground/` - Development demo app
@@ -84,13 +84,13 @@ Theme and locale actions are exposed via:
 ## Development Commands
 
 ```bash
-pnpm install              # Install all workspace dependencies
-pnpm build:lib:dev        # Build library with watch mode (required before playground)
-pnpm playground           # Start playground dev server
-pnpm build:lib            # Production build → outputs to lib/
-pnpm lint && pnpm fmt     # Lint (oxlint) and format (oxfmt)
-pnpm type-check           # TypeScript validation
-pnpm docs:dev             # Run documentation site locally
+bun install               # Install all workspace dependencies
+bun run build:lib:dev     # Build library with watch mode (required before playground)
+bun run playground        # Start playground dev server
+bun run build:lib         # Production build → outputs to lib/
+bun run lint && bun run fmt # Lint (oxlint) and format (oxfmt)
+bun run type-check        # TypeScript validation
+bun run docs:dev          # Run documentation site locally
 ```
 
 ## Build Output
@@ -115,6 +115,6 @@ Translations in `src/locales/{lang}.ts`. Add new locale:
 
 Always test in playground after modifying extensions:
 
-1. `pnpm build:lib:dev` (keep running)
-2. `pnpm playground` (in another terminal)
+1. `bun run build:lib:dev` (keep running)
+2. `bun run playground` (in another terminal)
 3. Import your extension in `playground/src/App.tsx`

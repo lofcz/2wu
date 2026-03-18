@@ -1,5 +1,6 @@
 import * as path from 'node:path';
 
+import reactScan from '@react-scan/vite-plugin-react-scan';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
@@ -12,7 +13,17 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env': {},
     },
-    plugins: [react()],
+    plugins: [
+      react(),
+      ...(isDev
+        ? [
+            reactScan({
+              enable: true,
+              autoDisplayNames: true,
+            }),
+          ]
+        : []),
+    ],
     optimizeDeps: {
       include: ['react'],
     },

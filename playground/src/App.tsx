@@ -1,4 +1,5 @@
 // Base Kit
+import type { Editor as TiptapEditor } from '@tiptap/core';
 import { Document } from '@tiptap/extension-document';
 import { HardBreak } from '@tiptap/extension-hard-break';
 import { ListItem } from '@tiptap/extension-list';
@@ -345,6 +346,12 @@ const extensions = [
 
 const DEFAULT = `<div class="callout" dir="auto" type="note" title="1" body="1"></div><div class="callout" dir="auto" type="tip" title="2" body="2"></div><div class="callout" dir="auto" type="important" title="3" body="3"></div><div class="callout" dir="auto" type="warning" title="4" body="4"></div><div class="callout" dir="auto" type="caution" title="5" body="5"></div><p dir="auto"><span dir="auto" data-name="smiley" data-type="emoji">😃</span> </p>`;
 
+interface HeaderProps {
+  editor: TiptapEditor | null;
+  theme: string;
+  setTheme: React.Dispatch<React.SetStateAction<string>>;
+}
+
 function debounce(func: any, wait: number) {
   let timeout: NodeJS.Timeout;
   return function (...args: any[]) {
@@ -354,31 +361,15 @@ function debounce(func: any, wait: number) {
   };
 }
 
-const Header = ({ editor, theme, setTheme }) => {
+const Header = ({ editor, theme, setTheme }: HeaderProps) => {
   const [editorEditable, setEditorEditable] = useState(false);
   const currentLocale = useLocale();
   const currentTheme = useTheme();
 
   useEffect(() => {
-    localeActions.setLang('vi');
-    themeActions.setColor('red');
+    localeActions.setLang('en');
+    themeActions.setColor('default');
     setEditorEditable(editor?.isEditable ?? true);
-  }, []);
-
-  useEffect(() => {
-    if (editor) {
-      editor.on('update', () => {
-        setEditorEditable(editor.isEditable);
-      });
-    }
-
-    return () => {
-      if (editor) {
-        editor.off('update', () => {
-          setEditorEditable(editor.isEditable);
-        });
-      }
-    };
   }, [editor]);
 
   return (
@@ -419,7 +410,9 @@ const Header = ({ editor, theme, setTheme }) => {
         <button
           type='button'
           onClick={() => {
-            editor?.setEditable(!editorEditable);
+            const nextEditable = !editorEditable;
+            editor?.setEditable(nextEditable);
+            setEditorEditable(nextEditable);
           }}
         >
           {editorEditable ? 'Editable' : 'Disabled'}
@@ -587,32 +580,59 @@ const RichTextToolbar = () => {
   );
 };
 
-function App() {
+function HtmlPreview({ editor }: { editor: TiptapEditor | null }) {
   const [content, setContent] = useState(DEFAULT);
-  const [theme, setTheme] = useState('light');
 
-  const onValueChange = useCallback(
-    debounce((value: any) => {
-      setContent(value);
-    }, 300),
+  const onValueChange = useMemo(
+    () =>
+      debounce((value: string) => {
+        setContent(value);
+      }, 300),
     []
   );
 
+  useEffect(() => {
+    if (!editor) {
+      return;
+    }
+
+    setContent(editor.getHTML());
+
+    const handleUpdate = ({ editor }: { editor: TiptapEditor }) => {
+      onValueChange(editor.getHTML());
+    };
+
+    editor.on('update', handleUpdate);
+
+    return () => {
+      editor.off('update', handleUpdate);
+    };
+  }, [editor, onValueChange]);
+
+  return (
+    <textarea
+      style={{
+        marginTop: 20,
+        height: 500,
+      }}
+      readOnly
+      value={content}
+    />
+  );
+}
+
+function App() {
+  const [theme, setTheme] = useState('light');
+
   const editor = useEditor({
-    // shouldRerenderOnTransaction:  false,
+    shouldRerenderOnTransaction: false,
     textDirection: 'auto', // global text direction
-    content,
+    content: DEFAULT,
     extensions,
-    // content,
-    // immediatelyRender: false, // error duplicate plugin key
-    onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      onValueChange(html);
-    },
   });
 
   useEffect(() => {
-    window['editor'] = editor;
+    (window as Window & { editor?: TiptapEditor | null }).editor = editor;
   }, [editor]);
 
   return (
@@ -658,16 +678,7 @@ function App() {
         </div>
       </RichTextProvider>
 
-      {typeof content === 'string' && (
-        <textarea
-          style={{
-            marginTop: 20,
-            height: 500,
-          }}
-          readOnly
-          value={content}
-        />
-      )}
+      <HtmlPreview editor={editor} />
     </div>
   );
 }

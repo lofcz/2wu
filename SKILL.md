@@ -23,7 +23,7 @@ description: A modern WYSIWYG rich-text editor for React, built on [Tiptap](http
 | Styling       | Tailwind CSS 3, SCSS, `class-variance-authority` |
 | Icons         | Lucide React, Radix Icons                        |
 | Build Tool    | Vite                                             |
-| Package Mgr   | pnpm (workspace monorepo)                        |
+| Package Mgr   | Bun (workspace monorepo)                         |
 | Linting       | oxlint, oxfmt                                    |
 | TypeScript    | 5.x                                              |
 | Node          | >= 18.0.0                                        |
@@ -281,26 +281,26 @@ src/
 # Clone and install
 git clone https://github.com/hunghg255/reactjs-tiptap-editor.git
 cd reactjs-tiptap-editor
-pnpm install
+bun install
 
 # Build the library (with watch mode)
-pnpm build:lib:dev
+bun run build:lib:dev
 
 # Run playground dev server
-pnpm playground
+bun run playground
 
 # Build library for production
-pnpm build:lib
+bun run build:lib
 
 # Lint & format
-pnpm lint
-pnpm fmt
+bun run lint
+bun run fmt
 
 # Type check
-pnpm type-check
+bun run type-check
 
 # Build documentation site
-pnpm docs:dev
+bun run docs:dev
 ```
 
 ## Key Design Decisions
